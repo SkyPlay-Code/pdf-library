@@ -196,7 +196,7 @@ main {
 
 .preview-btn {
     background-color: var(--primary-color);
-    color: #000;
+    color: #ffffff;
     transition: background-color 0.4s ease;
 }
 
@@ -206,8 +206,8 @@ main {
 
 .download-btn {
     background-color: var(--primary-variant-color);
-    /* ACCESSIBILITY FIX: Use black text for high contrast on all themes */
-    color: #000;
+    /* ACCESSIBILITY FIX: Use pure white for maximum contrast against all dark themes */
+    color: #FFFFFF; 
     font-weight: 700;
     transition: background-color 0.4s ease;
 }

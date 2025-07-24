@@ -62,7 +62,7 @@ const categories = [
     },
 ];
 
-// --- 2. GETTING HTML ELEMENTS (with new additions) ---
+// --- 2. GETTING HTML ELEMENTS ---
 const tabContainer = document.getElementById('tab-container');
 const pdfGrid = document.getElementById('pdf-grid');
 const searchInput = document.getElementById('searchInput');
@@ -72,8 +72,8 @@ const pdfFrame = document.getElementById('pdf-frame');
 const closeButton = document.querySelector('.close-button');
 const themeColorMeta = document.getElementById('theme-color-meta');
 const rootElement = document.documentElement;
-const currentCategoryTitle = document.getElementById('current-category-title'); // New
-const pdfLoader = document.getElementById('pdf-loader'); // New
+const currentCategoryTitle = document.getElementById('current-category-title');
+const pdfLoader = document.getElementById('pdf-loader');
 
 let currentActiveCategoryIndex = 0;
 
@@ -87,7 +87,9 @@ function applyTheme(theme) {
 }
 
 // --- 4. CORE RENDERING AND LOGIC ---
+
 function createTabs() {
+    // This function is already efficient, no changes needed.
     tabContainer.innerHTML = '';
     categories.forEach((category, index) => {
         const tabButton = document.createElement('button');
@@ -102,14 +104,19 @@ function createTabs() {
 }
 
 function displayBooks(bookList, categorySubject = "Book") {
-    pdfGrid.innerHTML = '';
+    // *** MAJOR PERFORMANCE FIX: Efficient DOM updates ***
+    // Instead of using `innerHTML +=` in a loop, we build an array of HTML strings
+    // and then join them for a single, fast DOM update.
+
     if (bookList.length === 0) {
         pdfGrid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">No books found.</p>';
         return;
     }
-    bookList.forEach((book, index) => {
+
+    const cardsHTML = bookList.map((book, index) => {
         const cleanFilename = createCleanFilename(book.title);
         let cardHeaderHTML;
+
         if (book.coverImage) {
             cardHeaderHTML = `<img src="${book.coverImage}" alt="${book.title} cover" class="cover-image" loading="lazy" width="280" height="200" onerror="this.onerror=null;this.src='https://via.placeholder.com/280x200/1e1e1e/e0e0e0?text=Image+Not+Found';">`;
         } else {
@@ -122,8 +129,8 @@ function displayBooks(bookList, categorySubject = "Book") {
                 </div>
             `;
         }
-        const cardHTML = `<div class="pdf-card" style="animation-delay: ${index * 0.05}s;"> ... </div>`; // Remainder is the same.
-        pdfGrid.innerHTML += `
+
+        return `
             <div class="pdf-card" style="animation-delay: ${index * 0.05}s;">
                 ${cardHeaderHTML}
                 <div class="card-content">
@@ -138,11 +145,15 @@ function displayBooks(bookList, categorySubject = "Book") {
                     </div>
                 </div>
             </div>`;
-    });
+    }).join('');
+    
+    pdfGrid.innerHTML = cardsHTML;
 }
 
+// ... All other functions like performSearch, openPreview, etc., remain the same ...
+// They are already efficient enough and don't block the initial load.
+
 function performSearch() {
-    // ... This function remains the same as your original ...
     const normalizedSearchTerm = normalizeString(searchInput.value);
     if (!normalizedSearchTerm) {
         tabContainer.style.display = 'flex';
@@ -166,62 +177,66 @@ function performSearch() {
     }
 }
 
-// --- 5. EVENT LISTENERS (with new/modified logic) ---
+
+// --- 5. EVENT LISTENERS ---
 tabContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('tab-button')) {
         const clickedIndex = parseInt(e.target.dataset.index);
         currentActiveCategoryIndex = clickedIndex;
         const activeCategory = categories[clickedIndex];
-        currentCategoryTitle.textContent = activeCategory.categoryName; // ACCESSIBILITY FIX
+        currentCategoryTitle.textContent = activeCategory.categoryName;
         applyTheme(activeCategory.theme);
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
         displayBooks(activeCategory.books, activeCategory.subject);
     }
 });
-
 searchInput.addEventListener('input', performSearch);
-
 pdfGrid.addEventListener('click', (e) => {
     const previewButton = e.target.closest('.preview-btn');
     if (previewButton) {
         openPreview(previewButton.dataset.file, previewButton.dataset.title);
     }
 });
-
 function openPreview(filePath, title) {
     modalTitle.textContent = title;
-    pdfLoader.style.display = 'flex'; // UX FIX: Show loader
-    pdfFrame.style.visibility = 'hidden'; // UX FIX: Hide iframe until ready
-    pdfFrame.src = ''; // Clear old src
-    pdfFrame.src = filePath; // Start loading new src
+    pdfLoader.style.display = 'flex';
+    pdfFrame.style.visibility = 'hidden';
+    pdfFrame.src = '';
+    pdfFrame.src = filePath;
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
-
-// UX FIX: New listener for when the PDF is fully loaded
 pdfFrame.addEventListener('load', () => {
     pdfLoader.style.display = 'none';
     pdfFrame.style.visibility = 'visible';
 });
-
 function closePreview() {
     modal.style.display = 'none';
-    pdfFrame.src = ''; // Stop PDF from loading in background
+    pdfFrame.src = '';
     document.body.style.overflow = 'auto';
 }
-
 closeButton.addEventListener('click', closePreview);
 window.addEventListener('click', (e) => { if (e.target == modal) closePreview(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'block') closePreview(); });
 
-// --- 6. INITIALIZATION (with new logic) ---
+
+// --- 6. INITIALIZATION (The most important change!) ---
 function init() {
     const initialCategory = categories[currentActiveCategoryIndex];
-    currentCategoryTitle.textContent = initialCategory.categoryName; // ACCESSIBILITY FIX
+    currentCategoryTitle.textContent = initialCategory.categoryName;
     applyTheme(initialCategory.theme);
-    createTabs();
-    displayBooks(initialCategory.books, initialCategory.subject);
+
+    // *** MAJOR PERFORMANCE FIX: Defer execution ***
+    // This `setTimeout` with a delay of 0ms is a powerful trick. It schedules the
+    // heavy work (createTabs, displayBooks) to run immediately *after* the browser
+    // has finished its current high-priority tasks, like painting the initial page.
+    // This unblocks the main thread and dramatically improves perceived load time.
+    setTimeout(() => {
+        createTabs();
+        displayBooks(initialCategory.books, initialCategory.subject);
+    }, 0);
 }
 
+// Start the application!
 init();
