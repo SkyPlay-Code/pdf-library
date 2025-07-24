@@ -16,9 +16,24 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
+    /* AESTHETIC POLISH: Add a subtle gradient */
+    background: #121212 radial-gradient(circle at 50% 0%, rgba(30, 30, 30, 0.8) 0%, rgba(18, 18, 18, 0) 70%);
+    background-attachment: fixed;
+}
+
+/* --- Accessibility Helper --- */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* --- Header & Search Bar --- */
@@ -43,7 +58,7 @@ header h1 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--primary-color);
-    transition: color 0.4s ease; /* Add this line */
+    transition: color 0.4s ease;
 }
 
 .search-container {
@@ -74,196 +89,14 @@ header h1 {
     color: #888;
 }
 
-/* --- PDF Grid & Cards --- */
+/* --- Main Content & Tab Styles --- */
 main {
     padding: 2rem 5%;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.pdf-card {
-    background-color: var(--card-color);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.pdf-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-}
-
-.pdf-card .cover-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.card-content {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* Makes content fill the space */
-}
-
-.card-content h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    flex-grow: 1; /* Pushes buttons to the bottom */
-}
-
-.card-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.card-buttons button, .card-buttons a {
-    flex: 1;
-    padding: 0.7rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.preview-btn {
-    background-color: var(--primary-color);
-    color: #000;
-    transition: background-color 0.4s ease; /* Update this line */
-}
-
-.preview-btn:hover {
-    background-color: #2cfcd9;
-}
-
-.download-btn {
-    background-color: var(--primary-variant-color);
-    color: var(--text-color);
-    transition: background-color 0.4s ease; /* Update this line */
-}
-
-.download-btn:hover {
-    background-color: #02a9a7;
-}
-
-/* --- PDF Preview Modal --- */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    position: relative;
-    width: 90%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-}
-
-#pdf-frame {
-    flex-grow: 1;
-    border: none;
-}
-
-.close-button {
-    color: #fff;
-    position: absolute;
-    top: -40px;
-    right: 0;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-/* --- Add this to the bottom of style.css --- */
-
-/* Title for the modal */
-#modal-title {
-    padding: 1rem 1.5rem;
-    background-color: var(--card-color);
-    color: var(--primary-color);
-    font-size: 1.2rem;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-}
-
-/* Card Animation */
-.pdf-card {
-    /* Add this property to your existing .pdf-card rule */
-    animation: fadeInUp 0.5s ease-in-out forwards;
-    opacity: 0; /* Start as invisible */
-}
-
-/* Keyframe animation for the cards */
-@keyframes fadeInUp {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* --- Add this to the bottom of style.css --- */
-
-/* --- Category Styles --- */
-.category-section {
-    max-width: 1200px;
-    margin: 0 auto 3rem auto; /* Add space between categories */
-}
-
-.category-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border-color);
-}
-
-/* Ensure grid container inside a category has correct margins */
-.category-section .grid-container {
-    padding: 0; /* Remove padding from grid if category section has it */
-}
-
-/* --- Add this to the bottom of style.css --- */
-
-/* --- Main Container & Tab Styles --- */
 .main-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 0;
 }
 
 .tab-container {
@@ -271,7 +104,7 @@ main {
     justify-content: center;
     gap: 1rem;
     margin-bottom: 2rem;
-    flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+    flex-wrap: wrap;
 }
 
 .tab-button {
@@ -298,21 +131,94 @@ main {
     box-shadow: 0 0 10px rgba(3, 218, 198, 0.5);
 }
 
-/* For Search Results */
-.search-results-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    text-align: center;
-    transition: color 0.4s ease;
+/* --- PDF Grid & Cards --- */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
 }
 
-/* --- Add this to the bottom of style.css --- */
+.pdf-card {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.5s ease-in-out forwards;
+    opacity: 0;
+}
+
+.pdf-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.pdf-card .cover-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #333; /* Placeholder color */
+}
+
+.card-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.card-buttons button, .card-buttons a {
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+}
+
+.preview-btn {
+    background-color: var(--primary-color);
+    color: #000;
+    transition: background-color 0.4s ease;
+}
+
+.preview-btn:hover {
+    filter: brightness(1.1);
+}
+
+.download-btn {
+    background-color: var(--primary-variant-color);
+    /* ACCESSIBILITY FIX: Use black text for high contrast on all themes */
+    color: #000;
+    font-weight: 700;
+    transition: background-color 0.4s ease;
+}
+
+.download-btn:hover {
+    filter: brightness(1.2);
+}
 
 /* --- Chapter Card (No Image) Styles --- */
 .card-header-no-image {
-    height: 200px; /* Same height as image to keep grid aligned */
+    height: 200px;
     background-color: var(--primary-color);
     border-bottom: 1px solid var(--border-color);
     display: flex;
@@ -323,13 +229,13 @@ main {
     padding: 1rem;
     position: relative;
     overflow: hidden;
-    transition: background-color 0.4s ease; /* For smooth theme changes */
+    transition: background-color 0.4s ease;
 }
 
 .chapter-number {
     font-size: 5rem;
     font-weight: 700;
-    color: rgba(0, 0, 0, 0.7); /* Dark text to contrast with theme color */
+    color: rgba(0, 0, 0, 0.7);
     line-height: 1;
 }
 
@@ -338,4 +244,135 @@ main {
     font-weight: 600;
     color: rgba(0, 0, 0, 0.8);
     margin-top: -0.5rem;
+}
+
+/* --- PDF Preview Modal --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+    background-color: var(--card-color);
+    margin: 5% auto;
+    position: relative;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#modal-title {
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+#pdf-frame {
+    flex-grow: 1;
+    border: none;
+    visibility: hidden; /* Hidden until loaded */
+}
+
+.close-button {
+    color: #fff;
+    position: absolute;
+    top: 0.5rem;
+    right: 1.25rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2010;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--primary-color);
+}
+
+/* --- UX FIX: PDF Loader Styles --- */
+.loader-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-color);
+}
+.loader {
+    border: 8px solid #333;
+    border-top: 8px solid var(--primary-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    transition: border-top-color 0.4s ease;
+}
+
+/* --- Animations --- */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 5%;
+    }
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    .tab-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    header h1 {
+        font-size: 1.5rem;
+    }
+    #searchInput {
+        width: 100%;
+    }
+    .main-container, main {
+        padding: 1rem 5%;
+    }
+    .grid-container {
+        gap: 1rem;
+    }
 }

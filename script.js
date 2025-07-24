@@ -1,9 +1,8 @@
-// --- 1. OUR DYNAMIC, THEMED DATA STRUCTURE (CORRECTED & EXPANDED) ---
+// --- 1. YOUR DATA (Unchanged) ---
 const categories = [
     {
         categoryName: "Chemistry - Class 11 Part 1",
-        theme: { primary: '#F44336', variant: '#D32F2F' }, // Red for Chemistry
-        subject: "Chemistry Chapter",
+        theme: { primary: '#F44336', variant: '#D32F2F' }, subject: "Chemistry Chapter",
         books: [
             { id: 101, title: "Ch 1: Some Basic Concepts of Chemistry", fileName: "kech101.pdf", keywords: ["concepts", "chemistry", "chapter 1"] },
             { id: 102, title: "Ch 2: Structure of Atom", fileName: "kech102.pdf", keywords: ["atom", "structure", "chapter 2"] },
@@ -16,8 +15,7 @@ const categories = [
     },
     {
         categoryName: "Chemistry - Class 11 Part 2",
-        theme: { primary: '#F44336', variant: '#D32F2F' }, // Red for Chemistry
-        subject: "Chemistry Chapter",
+        theme: { primary: '#F44336', variant: '#D32F2F' }, subject: "Chemistry Chapter",
         books: [
             { id: 201, title: "Ch 7: Redox Reactions", fileName: "kech201.pdf", keywords: ["redox", "reactions", "chapter 7"] },
             { id: 202, title: "Ch 8: Organic Chemistry", fileName: "kech202.pdf", keywords: ["organic", "chemistry", "chapter 8"] },
@@ -25,10 +23,9 @@ const categories = [
             { id: 204, title: "NCERT Chemistry Class 11 Part 2", fileName: "full book chem part 2.pdf", coverImage: "https://ncert.nic.in/textbook/pdf/kech2cc.jpg", keywords: ["full book", "part 2"] },
         ]
     },
-        {
+    {
         categoryName: "Physics - Class 11 Part 1",
-        theme: { primary: '#2196F3', variant: '#1976D2' }, // Blue for Physics
-        subject: "Physics Chapter",
+        theme: { primary: '#2196F3', variant: '#1976D2' }, subject: "Physics Chapter",
         books: [
             { id: 301, title: "Ch 1: Units and Measurements", fileName: "keph101.pdf", keywords: ["units", "measurements", "chapter 1"] },
             { id: 302, title: "Ch 2: Motion in a Straight Line", fileName: "keph102.pdf", keywords: ["motion", "straight line", "chapter 2"] },
@@ -42,8 +39,7 @@ const categories = [
     },
     {
         categoryName: "Physics - Class 11 Part 2",
-        theme: { primary: '#2196F3', variant: '#1976D2' }, // Blue for Physics
-        subject: "Physics Chapter",
+        theme: { primary: '#2196F3', variant: '#1976D2' }, subject: "Physics Chapter",
         books: [
             { id: 401, title: "Ch 8: Mechanical Properties of Solids", fileName: "keph201.pdf", keywords: ["solids", "mechanical", "properties", "chapter 8"] },
             { id: 402, title: "Ch 9: Mechanical Properties of Fluids", fileName: "keph202.pdf", keywords: ["fluids", "mechanical", "properties", "chapter 9"] },
@@ -57,8 +53,7 @@ const categories = [
     },
     {
         categoryName: "General Reference",
-        theme: { primary: '#03dac6', variant: '#018786' }, // Original Cyan for general books
-        subject: "Reference Book",
+        theme: { primary: '#03dac6', variant: '#018786' }, subject: "Reference Book",
         books: [
             { id: 1, title: "Concepts of Physics Vol.1 - H.C. Verma", fileName: "HC Verma - Concepts of Physics Volume 1. Volume 1-Bharati Bhawan Publishers (2019).pdf", coverImage: "https://rukminim2.flixcart.com/image/704/844/xif0q/book/n/r/g/concept-of-physics-by-h-c-verma-part-i-session-2024-25-original-imahdbbhykmjwudy.jpeg?q=90&crop=false", keywords: ["hcv", "hcverma"] },
             { id: 2, title: "Concepts of Physics Vol.2 - H.C. Verma", fileName: "HC Verma - Concepts of Physics Volume 2.pdf", coverImage: "https://rukminim2.flixcart.com/image/704/844/jzlldow0/book/3/2/1/concepts-of-physics-v-2-original-imafgyq7pgxgwztk.jpeg?q=20&crop=false", keywords: ["hcv", "hcverma"] },
@@ -67,8 +62,7 @@ const categories = [
     },
 ];
 
-
-// --- 2. GETTING HTML ELEMENTS ---
+// --- 2. GETTING HTML ELEMENTS (with new additions) ---
 const tabContainer = document.getElementById('tab-container');
 const pdfGrid = document.getElementById('pdf-grid');
 const searchInput = document.getElementById('searchInput');
@@ -78,10 +72,12 @@ const pdfFrame = document.getElementById('pdf-frame');
 const closeButton = document.querySelector('.close-button');
 const themeColorMeta = document.getElementById('theme-color-meta');
 const rootElement = document.documentElement;
+const currentCategoryTitle = document.getElementById('current-category-title'); // New
+const pdfLoader = document.getElementById('pdf-loader'); // New
 
 let currentActiveCategoryIndex = 0;
 
-// --- 3. HELPER & THEME FUNCTIONS ---
+// --- 3. HELPER & THEME FUNCTIONS (Unchanged) ---
 function normalizeString(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, ''); }
 function createCleanFilename(title) { return title.replace(/ /g, '-').replace(/[^a-zA-Z0-9-]/g, '') + '.pdf'; }
 function applyTheme(theme) {
@@ -89,7 +85,6 @@ function applyTheme(theme) {
     rootElement.style.setProperty('--primary-variant-color', theme.variant);
     themeColorMeta.setAttribute('content', theme.primary);
 }
-
 
 // --- 4. CORE RENDERING AND LOGIC ---
 function createTabs() {
@@ -112,13 +107,11 @@ function displayBooks(bookList, categorySubject = "Book") {
         pdfGrid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">No books found.</p>';
         return;
     }
-
     bookList.forEach((book, index) => {
         const cleanFilename = createCleanFilename(book.title);
         let cardHeaderHTML;
-
         if (book.coverImage) {
-            cardHeaderHTML = `<img src="${book.coverImage}" alt="${book.title} cover" class="cover-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/280x200/1e1e1e/e0e0e0?text=Image+Not+Found';">`;
+            cardHeaderHTML = `<img src="${book.coverImage}" alt="${book.title} cover" class="cover-image" loading="lazy" width="280" height="200" onerror="this.onerror=null;this.src='https://via.placeholder.com/280x200/1e1e1e/e0e0e0?text=Image+Not+Found';">`;
         } else {
             const chapterNumMatch = book.title.match(/\d+/);
             const chapterNum = chapterNumMatch ? chapterNumMatch[0] : '??';
@@ -129,8 +122,8 @@ function displayBooks(bookList, categorySubject = "Book") {
                 </div>
             `;
         }
-
-        const cardHTML = `
+        const cardHTML = `<div class="pdf-card" style="animation-delay: ${index * 0.05}s;"> ... </div>`; // Remainder is the same.
+        pdfGrid.innerHTML += `
             <div class="pdf-card" style="animation-delay: ${index * 0.05}s;">
                 ${cardHeaderHTML}
                 <div class="card-content">
@@ -145,12 +138,11 @@ function displayBooks(bookList, categorySubject = "Book") {
                     </div>
                 </div>
             </div>`;
-        
-        pdfGrid.innerHTML += cardHTML;
     });
 }
 
 function performSearch() {
+    // ... This function remains the same as your original ...
     const normalizedSearchTerm = normalizeString(searchInput.value);
     if (!normalizedSearchTerm) {
         tabContainer.style.display = 'flex';
@@ -174,13 +166,13 @@ function performSearch() {
     }
 }
 
-
-// --- 5. EVENT LISTENERS ---
+// --- 5. EVENT LISTENERS (with new/modified logic) ---
 tabContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('tab-button')) {
         const clickedIndex = parseInt(e.target.dataset.index);
         currentActiveCategoryIndex = clickedIndex;
         const activeCategory = categories[clickedIndex];
+        currentCategoryTitle.textContent = activeCategory.categoryName; // ACCESSIBILITY FIX
         applyTheme(activeCategory.theme);
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
@@ -189,6 +181,7 @@ tabContainer.addEventListener('click', (e) => {
 });
 
 searchInput.addEventListener('input', performSearch);
+
 pdfGrid.addEventListener('click', (e) => {
     const previewButton = e.target.closest('.preview-btn');
     if (previewButton) {
@@ -198,15 +191,23 @@ pdfGrid.addEventListener('click', (e) => {
 
 function openPreview(filePath, title) {
     modalTitle.textContent = title;
-    pdfFrame.src = filePath;
+    pdfLoader.style.display = 'flex'; // UX FIX: Show loader
+    pdfFrame.style.visibility = 'hidden'; // UX FIX: Hide iframe until ready
+    pdfFrame.src = ''; // Clear old src
+    pdfFrame.src = filePath; // Start loading new src
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 
+// UX FIX: New listener for when the PDF is fully loaded
+pdfFrame.addEventListener('load', () => {
+    pdfLoader.style.display = 'none';
+    pdfFrame.style.visibility = 'visible';
+});
+
 function closePreview() {
     modal.style.display = 'none';
-    modalTitle.textContent = '';
-    pdfFrame.src = '';
+    pdfFrame.src = ''; // Stop PDF from loading in background
     document.body.style.overflow = 'auto';
 }
 
@@ -214,10 +215,10 @@ closeButton.addEventListener('click', closePreview);
 window.addEventListener('click', (e) => { if (e.target == modal) closePreview(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'block') closePreview(); });
 
-
-// --- 6. INITIALIZATION ---
+// --- 6. INITIALIZATION (with new logic) ---
 function init() {
     const initialCategory = categories[currentActiveCategoryIndex];
+    currentCategoryTitle.textContent = initialCategory.categoryName; // ACCESSIBILITY FIX
     applyTheme(initialCategory.theme);
     createTabs();
     displayBooks(initialCategory.books, initialCategory.subject);
