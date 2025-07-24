@@ -1,8 +1,9 @@
-// --- 1. YOUR DATA (Unchanged) ---
-const categories = [ /* Your full categories array goes here. It is unchanged. */
+// --- 1. OUR DYNAMIC, THEMED DATA STRUCTURE ---
+const categories = [
     {
         categoryName: "Chemistry - Class 11 Part 1",
-        theme: { primary: '#F44336', variant: '#D32F2F' }, subject: "Chemistry Chapter",
+        theme: { primary: '#F44336', variant: '#D32F2F' },
+        subject: "Chemistry Chapter",
         books: [
             { id: 101, title: "Ch 1: Some Basic Concepts of Chemistry", fileName: "kech101.pdf", keywords: ["concepts", "chemistry", "chapter 1"] },
             { id: 102, title: "Ch 2: Structure of Atom", fileName: "kech102.pdf", keywords: ["atom", "structure", "chapter 2"] },
@@ -15,7 +16,8 @@ const categories = [ /* Your full categories array goes here. It is unchanged. *
     },
     {
         categoryName: "Chemistry - Class 11 Part 2",
-        theme: { primary: '#F44336', variant: '#D32F2F' }, subject: "Chemistry Chapter",
+        theme: { primary: '#F44336', variant: '#D32F2F' },
+        subject: "Chemistry Chapter",
         books: [
             { id: 201, title: "Ch 7: Redox Reactions", fileName: "kech201.pdf", keywords: ["redox", "reactions", "chapter 7"] },
             { id: 202, title: "Ch 8: Organic Chemistry", fileName: "kech202.pdf", keywords: ["organic", "chemistry", "chapter 8"] },
@@ -25,7 +27,8 @@ const categories = [ /* Your full categories array goes here. It is unchanged. *
     },
     {
         categoryName: "Physics - Class 11 Part 1",
-        theme: { primary: '#2196F3', variant: '#1976D2' }, subject: "Physics Chapter",
+        theme: { primary: '#2196F3', variant: '#1976D2' },
+        subject: "Physics Chapter",
         books: [
             { id: 301, title: "Ch 1: Units and Measurements", fileName: "keph101.pdf", keywords: ["units", "measurements", "chapter 1"] },
             { id: 302, title: "Ch 2: Motion in a Straight Line", fileName: "keph102.pdf", keywords: ["motion", "straight line", "chapter 2"] },
@@ -39,7 +42,8 @@ const categories = [ /* Your full categories array goes here. It is unchanged. *
     },
     {
         categoryName: "Physics - Class 11 Part 2",
-        theme: { primary: '#2196F3', variant: '#1976D2' }, subject: "Physics Chapter",
+        theme: { primary: '#2196F3', variant: '#1976D2' },
+        subject: "Physics Chapter",
         books: [
             { id: 401, title: "Ch 8: Mechanical Properties of Solids", fileName: "keph201.pdf", keywords: ["solids", "mechanical", "properties", "chapter 8"] },
             { id: 402, title: "Ch 9: Mechanical Properties of Fluids", fileName: "keph202.pdf", keywords: ["fluids", "mechanical", "properties", "chapter 9"] },
@@ -53,7 +57,8 @@ const categories = [ /* Your full categories array goes here. It is unchanged. *
     },
     {
         categoryName: "General Reference",
-        theme: { primary: '#03dac6', variant: '#018786' }, subject: "Reference Book",
+        theme: { primary: '#03dac6', variant: '#018786' },
+        subject: "Reference Book",
         books: [
             { id: 1, title: "Concepts of Physics Vol.1 - H.C. Verma", fileName: "HC Verma - Concepts of Physics Volume 1. Volume 1-Bharati Bhawan Publishers (2019).pdf", coverImage: "https://rukminim2.flixcart.com/image/704/844/xif0q/book/n/r/g/concept-of-physics-by-h-c-verma-part-i-session-2024-25-original-imahdbbhykmjwudy.jpeg?q=90&crop=false", keywords: ["hcv", "hcverma"] },
             { id: 2, title: "Concepts of Physics Vol.2 - H.C. Verma", fileName: "HC Verma - Concepts of Physics Volume 2.pdf", coverImage: "https://rukminim2.flixcart.com/image/704/844/jzlldow0/book/3/2/1/concepts-of-physics-v-2-original-imafgyq7pgxgwztk.jpeg?q=20&crop=false", keywords: ["hcv", "hcverma"] },
@@ -65,7 +70,6 @@ const categories = [ /* Your full categories array goes here. It is unchanged. *
 // --- 2. GETTING HTML ELEMENTS ---
 const tabContainer = document.getElementById('tab-container');
 const pdfGrid = document.getElementById('pdf-grid');
-// ... all other element variables are the same ...
 const searchInput = document.getElementById('searchInput');
 const modal = document.getElementById('pdf-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -76,9 +80,9 @@ const rootElement = document.documentElement;
 const currentCategoryTitle = document.getElementById('current-category-title');
 const pdfLoader = document.getElementById('pdf-loader');
 let currentActiveCategoryIndex = 0;
+let intersectionObserver;
 
-
-// --- 3. HELPER & THEME FUNCTIONS (Unchanged) ---
+// --- 3. HELPER & THEME FUNCTIONS ---
 function normalizeString(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, ''); }
 function createCleanFilename(title) { return title.replace(/ /g, '-').replace(/[^a-zA-Z0-9-]/g, '') + '.pdf'; }
 function applyTheme(theme) {
@@ -87,10 +91,42 @@ function applyTheme(theme) {
     themeColorMeta.setAttribute('content', theme.primary);
 }
 
+/**
+ * Sets up an Intersection Observer to prefetch PDFs when they scroll into view.
+ * This is a highly efficient way to speed up downloads on both mobile and desktop.
+ */
+function setupIntersectionObserver() {
+    if (intersectionObserver) {
+        intersectionObserver.disconnect();
+    }
+    
+    intersectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const downloadButton = entry.target;
+                const fileUrl = downloadButton.href;
+
+                const prefetchLink = document.createElement('link');
+                prefetchLink.rel = 'prefetch';
+                prefetchLink.href = fileUrl;
+                prefetchLink.as = 'fetch';
+                prefetchLink.crossOrigin = "anonymous";
+                document.head.appendChild(prefetchLink);
+
+                observer.unobserve(downloadButton);
+            }
+        });
+    }, {
+        rootMargin: '0px 0px 200px 0px'
+    });
+
+    const downloadButtons = document.querySelectorAll('.download-btn');
+    downloadButtons.forEach(btn => intersectionObserver.observe(btn));
+}
+
 
 // --- 4. CORE RENDERING AND LOGIC ---
 function createTabs() {
-    // ... This function is unchanged ...
     tabContainer.innerHTML = '';
     categories.forEach((category, index) => {
         const tabButton = document.createElement('button');
@@ -105,7 +141,6 @@ function createTabs() {
 }
 
 function displayBooks(bookList, categorySubject = "Book") {
-    // ... This function is mostly unchanged, except for the tiny HTML update ...
     if (bookList.length === 0) {
         pdfGrid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">No books found.</p>';
         return;
@@ -118,13 +153,8 @@ function displayBooks(bookList, categorySubject = "Book") {
         } else {
             const chapterNumMatch = book.title.match(/\d+/);
             const chapterNum = chapterNumMatch ? chapterNumMatch[0] : '??';
-            cardHeaderHTML = `
-                <div class="card-header-no-image">
-                    <div class="chapter-number">${chapterNum}</div>
-                    <div class="chapter-subject">${categorySubject}</div>
-                </div>`;
+            cardHeaderHTML = `<div class="card-header-no-image"><div class="chapter-number">${chapterNum}</div><div class="chapter-subject">${categorySubject}</div></div>`;
         }
-        // *** THE ONLY CHANGE IS HERE 👇 ***
         return `
             <div class="pdf-card" style="animation-delay: ${index * 0.05}s;">
                 ${cardHeaderHTML}
@@ -143,10 +173,11 @@ function displayBooks(bookList, categorySubject = "Book") {
                 </div>
             </div>`;
     }).join('');
+    
     pdfGrid.innerHTML = cardsHTML;
+    setupIntersectionObserver();
 }
 
-// ... performSearch() is unchanged ...
 function performSearch() {
     const normalizedSearchTerm = normalizeString(searchInput.value);
     if (!normalizedSearchTerm) {
@@ -165,7 +196,7 @@ function performSearch() {
     });
     if (filteredBooks.length > 0) {
         pdfGrid.innerHTML = `<h2 class="search-results-title">Search Results</h2>`;
-        displayBooks(filteredBooks, "Book"); 
+        displayBooks(filteredBooks, "Book");
     } else {
         pdfGrid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">No books found matching your search.</p>';
     }
@@ -173,7 +204,6 @@ function performSearch() {
 
 
 // --- 5. EVENT LISTENERS ---
-// ... tabContainer listener and searchInput listener are unchanged ...
 tabContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('tab-button')) {
         const clickedIndex = parseInt(e.target.dataset.index);
@@ -189,8 +219,6 @@ tabContainer.addEventListener('click', (e) => {
 
 searchInput.addEventListener('input', performSearch);
 
-
-// *** MAJOR CHANGE HERE 👇 ***
 pdfGrid.addEventListener('click', (e) => {
     const previewButton = e.target.closest('.preview-btn');
     const downloadButton = e.target.closest('.download-btn');
@@ -200,18 +228,13 @@ pdfGrid.addEventListener('click', (e) => {
     }
 
     if (downloadButton) {
-        // Stop the link from working normally
         e.preventDefault();
-        
-        // Give instant feedback
+        if (downloadButton.classList.contains('is-downloading')) return;
+
         downloadButton.classList.add('is-downloading');
-        
-        // Get the file details
         const fileUrl = downloadButton.href;
         const fileName = downloadButton.download;
         
-        // Trigger the actual download programmatically after a tiny delay
-        // This gives the browser time to update the UI first
         setTimeout(() => {
             const link = document.createElement('a');
             link.href = fileUrl;
@@ -220,17 +243,13 @@ pdfGrid.addEventListener('click', (e) => {
             link.click();
             document.body.removeChild(link);
             
-            // Revert the button state after a few seconds
             setTimeout(() => {
                 downloadButton.classList.remove('is-downloading');
             }, 4000);
-
         }, 100);
     }
 });
 
-
-// ... All other functions and listeners are unchanged ...
 function openPreview(filePath, title) {
     modalTitle.textContent = title;
     pdfLoader.style.display = 'flex';
@@ -240,15 +259,18 @@ function openPreview(filePath, title) {
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
+
 pdfFrame.addEventListener('load', () => {
     pdfLoader.style.display = 'none';
     pdfFrame.style.visibility = 'visible';
 });
+
 function closePreview() {
     modal.style.display = 'none';
     pdfFrame.src = '';
     document.body.style.overflow = 'auto';
 }
+
 closeButton.addEventListener('click', closePreview);
 window.addEventListener('click', (e) => { if (e.target == modal) closePreview(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'block') closePreview(); });
@@ -256,10 +278,10 @@ window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.styl
 
 // --- 6. INITIALIZATION ---
 function init() {
-    // ... This function is unchanged from the last performance update ...
     const initialCategory = categories[currentActiveCategoryIndex];
     currentCategoryTitle.textContent = initialCategory.categoryName;
     applyTheme(initialCategory.theme);
+    
     setTimeout(() => {
         createTabs();
         displayBooks(initialCategory.books, initialCategory.subject);
