@@ -376,3 +376,38 @@ main {
         gap: 1rem;
     }
 }
+
+/* --- Add this to the bottom of style.css --- */
+
+/* --- Download Button - Active Downloading State --- */
+.download-btn.is-downloading {
+    position: relative;
+    pointer-events: none; /* Disables the button */
+    filter: brightness(0.9);
+}
+
+.download-btn .btn-text {
+    transition: opacity 0.2s ease;
+}
+
+.download-btn.is-downloading .btn-text {
+    opacity: 0; /* Hide the original text */
+}
+
+.download-btn .btn-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000; /* Use black to contrast with all themes */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none; /* Hidden by default */
+}
+
+.download-btn.is-downloading .btn-loader {
+    display: block; /* Show the loader */
+}

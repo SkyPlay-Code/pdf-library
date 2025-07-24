@@ -1,5 +1,5 @@
 // --- 1. YOUR DATA (Unchanged) ---
-const categories = [
+const categories = [ /* Your full categories array goes here. It is unchanged. */
     {
         categoryName: "Chemistry - Class 11 Part 1",
         theme: { primary: '#F44336', variant: '#D32F2F' }, subject: "Chemistry Chapter",
@@ -65,6 +65,7 @@ const categories = [
 // --- 2. GETTING HTML ELEMENTS ---
 const tabContainer = document.getElementById('tab-container');
 const pdfGrid = document.getElementById('pdf-grid');
+// ... all other element variables are the same ...
 const searchInput = document.getElementById('searchInput');
 const modal = document.getElementById('pdf-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -74,8 +75,8 @@ const themeColorMeta = document.getElementById('theme-color-meta');
 const rootElement = document.documentElement;
 const currentCategoryTitle = document.getElementById('current-category-title');
 const pdfLoader = document.getElementById('pdf-loader');
-
 let currentActiveCategoryIndex = 0;
+
 
 // --- 3. HELPER & THEME FUNCTIONS (Unchanged) ---
 function normalizeString(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, ''); }
@@ -86,10 +87,10 @@ function applyTheme(theme) {
     themeColorMeta.setAttribute('content', theme.primary);
 }
 
-// --- 4. CORE RENDERING AND LOGIC ---
 
+// --- 4. CORE RENDERING AND LOGIC ---
 function createTabs() {
-    // This function is already efficient, no changes needed.
+    // ... This function is unchanged ...
     tabContainer.innerHTML = '';
     categories.forEach((category, index) => {
         const tabButton = document.createElement('button');
@@ -104,19 +105,14 @@ function createTabs() {
 }
 
 function displayBooks(bookList, categorySubject = "Book") {
-    // *** MAJOR PERFORMANCE FIX: Efficient DOM updates ***
-    // Instead of using `innerHTML +=` in a loop, we build an array of HTML strings
-    // and then join them for a single, fast DOM update.
-
+    // ... This function is mostly unchanged, except for the tiny HTML update ...
     if (bookList.length === 0) {
         pdfGrid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">No books found.</p>';
         return;
     }
-
     const cardsHTML = bookList.map((book, index) => {
         const cleanFilename = createCleanFilename(book.title);
         let cardHeaderHTML;
-
         if (book.coverImage) {
             cardHeaderHTML = `<img src="${book.coverImage}" alt="${book.title} cover" class="cover-image" loading="lazy" width="280" height="200" onerror="this.onerror=null;this.src='https://via.placeholder.com/280x200/1e1e1e/e0e0e0?text=Image+Not+Found';">`;
         } else {
@@ -126,10 +122,9 @@ function displayBooks(bookList, categorySubject = "Book") {
                 <div class="card-header-no-image">
                     <div class="chapter-number">${chapterNum}</div>
                     <div class="chapter-subject">${categorySubject}</div>
-                </div>
-            `;
+                </div>`;
         }
-
+        // *** THE ONLY CHANGE IS HERE 👇 ***
         return `
             <div class="pdf-card" style="animation-delay: ${index * 0.05}s;">
                 ${cardHeaderHTML}
@@ -140,19 +135,18 @@ function displayBooks(bookList, categorySubject = "Book") {
                             <i class="fas fa-eye"></i> Preview
                         </button>
                         <a href="pdfs/${book.fileName}" download="${cleanFilename}" class="download-btn">
-                            <i class="fas fa-download"></i> Download
+                            <i class="fas fa-download"></i>
+                            <span class="btn-text">Download</span>
+                            <div class="btn-loader"></div>
                         </a>
                     </div>
                 </div>
             </div>`;
     }).join('');
-    
     pdfGrid.innerHTML = cardsHTML;
 }
 
-// ... All other functions like performSearch, openPreview, etc., remain the same ...
-// They are already efficient enough and don't block the initial load.
-
+// ... performSearch() is unchanged ...
 function performSearch() {
     const normalizedSearchTerm = normalizeString(searchInput.value);
     if (!normalizedSearchTerm) {
@@ -179,6 +173,7 @@ function performSearch() {
 
 
 // --- 5. EVENT LISTENERS ---
+// ... tabContainer listener and searchInput listener are unchanged ...
 tabContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('tab-button')) {
         const clickedIndex = parseInt(e.target.dataset.index);
@@ -191,13 +186,51 @@ tabContainer.addEventListener('click', (e) => {
         displayBooks(activeCategory.books, activeCategory.subject);
     }
 });
+
 searchInput.addEventListener('input', performSearch);
+
+
+// *** MAJOR CHANGE HERE 👇 ***
 pdfGrid.addEventListener('click', (e) => {
     const previewButton = e.target.closest('.preview-btn');
+    const downloadButton = e.target.closest('.download-btn');
+
     if (previewButton) {
         openPreview(previewButton.dataset.file, previewButton.dataset.title);
     }
+
+    if (downloadButton) {
+        // Stop the link from working normally
+        e.preventDefault();
+        
+        // Give instant feedback
+        downloadButton.classList.add('is-downloading');
+        
+        // Get the file details
+        const fileUrl = downloadButton.href;
+        const fileName = downloadButton.download;
+        
+        // Trigger the actual download programmatically after a tiny delay
+        // This gives the browser time to update the UI first
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Revert the button state after a few seconds
+            setTimeout(() => {
+                downloadButton.classList.remove('is-downloading');
+            }, 4000);
+
+        }, 100);
+    }
 });
+
+
+// ... All other functions and listeners are unchanged ...
 function openPreview(filePath, title) {
     modalTitle.textContent = title;
     pdfLoader.style.display = 'flex';
@@ -221,22 +254,16 @@ window.addEventListener('click', (e) => { if (e.target == modal) closePreview();
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'block') closePreview(); });
 
 
-// --- 6. INITIALIZATION (The most important change!) ---
+// --- 6. INITIALIZATION ---
 function init() {
+    // ... This function is unchanged from the last performance update ...
     const initialCategory = categories[currentActiveCategoryIndex];
     currentCategoryTitle.textContent = initialCategory.categoryName;
     applyTheme(initialCategory.theme);
-
-    // *** MAJOR PERFORMANCE FIX: Defer execution ***
-    // This `setTimeout` with a delay of 0ms is a powerful trick. It schedules the
-    // heavy work (createTabs, displayBooks) to run immediately *after* the browser
-    // has finished its current high-priority tasks, like painting the initial page.
-    // This unblocks the main thread and dramatically improves perceived load time.
     setTimeout(() => {
         createTabs();
         displayBooks(initialCategory.books, initialCategory.subject);
     }, 0);
 }
 
-// Start the application!
 init();
