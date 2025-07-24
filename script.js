@@ -91,10 +91,6 @@ function applyTheme(theme) {
     themeColorMeta.setAttribute('content', theme.primary);
 }
 
-/**
- * Sets up an Intersection Observer to prefetch PDFs when they scroll into view.
- * This is a highly efficient way to speed up downloads on both mobile and desktop.
- */
 function setupIntersectionObserver() {
     if (intersectionObserver) {
         intersectionObserver.disconnect();
@@ -104,15 +100,12 @@ function setupIntersectionObserver() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const downloadButton = entry.target;
-                const fileUrl = downloadButton.href;
-
                 const prefetchLink = document.createElement('link');
                 prefetchLink.rel = 'prefetch';
-                prefetchLink.href = fileUrl;
+                prefetchLink.href = downloadButton.href;
                 prefetchLink.as = 'fetch';
                 prefetchLink.crossOrigin = "anonymous";
                 document.head.appendChild(prefetchLink);
-
                 observer.unobserve(downloadButton);
             }
         });
@@ -219,6 +212,38 @@ tabContainer.addEventListener('click', (e) => {
 
 searchInput.addEventListener('input', performSearch);
 
+async function triggerDownloadWithProgress(button) {
+    if (button.classList.contains('is-downloading')) return;
+
+    button.classList.add('is-downloading');
+    
+    const fileUrl = button.href;
+    const fileName = button.download;
+    
+    try {
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+
+    } catch (error) {
+        console.error("Download failed:", error);
+        const btnText = button.querySelector('.btn-text');
+        if(btnText) btnText.textContent = "Failed";
+        setTimeout(() => { if(btnText) btnText.textContent = "Download"; }, 4000);
+
+    } finally {
+        button.classList.remove('is-downloading');
+    }
+}
+
 pdfGrid.addEventListener('click', (e) => {
     const previewButton = e.target.closest('.preview-btn');
     const downloadButton = e.target.closest('.download-btn');
@@ -226,27 +251,9 @@ pdfGrid.addEventListener('click', (e) => {
     if (previewButton) {
         openPreview(previewButton.dataset.file, previewButton.dataset.title);
     }
-
     if (downloadButton) {
         e.preventDefault();
-        if (downloadButton.classList.contains('is-downloading')) return;
-
-        downloadButton.classList.add('is-downloading');
-        const fileUrl = downloadButton.href;
-        const fileName = downloadButton.download;
-        
-        setTimeout(() => {
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            setTimeout(() => {
-                downloadButton.classList.remove('is-downloading');
-            }, 4000);
-        }, 100);
+        triggerDownloadWithProgress(downloadButton);
     }
 });
 
