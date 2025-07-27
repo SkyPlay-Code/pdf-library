@@ -8,22 +8,20 @@
     
     <link rel="icon" type="image/png" href="online-library.png">
     
-    <!-- PERFORMANCE: Preconnect to external domains to speed up DNS lookup & connection -->
+    <!-- PERFORMANCE: Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
-    <!-- PERFORMANCE: Load external CSS asynchronously to prevent render-blocking -->
+    <!-- PERFORMANCE: Async CSS Loading -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
-    <!-- Fallback for browsers without JavaScript or good async support -->
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     </noscript>
 
-    <!-- Our main stylesheet is small and critical, so we load it directly -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,7 +30,7 @@
         <div class="header-content">
             <h1>PDF Library</h1>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search for a book...">
+                <input type="text" id="searchInput" placeholder="Search for any chapter or book...">
                 <i class="fas fa-search"></i>
             </div>
         </div>
@@ -41,27 +39,52 @@
     <main>
         <div class="main-container">
             <div id="tab-container" class="tab-container"></div>
-            <!-- ACCESSIBILITY FIX: Add a visually hidden h2 for screen readers and semantic structure -->
-            <h2 id="current-category-title" class="visually-hidden"></h2>
-            <div id="pdf-grid" class="grid-container"></div>
+            <h2 id="current-category-title" class="category-title"></h2>
+            
+            <!-- NEW: Skeleton Loader for improved perceived performance -->
+            <div id="grid-loader" class="grid-container">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+
+            <div id="pdf-grid" class="grid-container" style="display: none;"></div>
         </div>
     </main>
 
-    <!-- The Modal (Pop-up for PDF Preview) -->
+    <!-- The Modal -->
     <div id="pdf-modal" class="modal">
         <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <span class="close-button">×</span>
-            <!-- UX FIX: Add a loading spinner for large PDFs -->
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <!-- NEW: Direct download link inside the modal -->
+                <a id="modal-download-link" href="#" download class="modal-download-btn">
+                    <i class="fas fa-download"></i> Download
+                </a>
+                <span class="close-button">×</span>
+            </div>
             <div class="loader-container" id="pdf-loader">
                 <div class="loader"></div>
-                <p>Loading PDF...</p>
+                <p>Loading Preview...</p>
             </div>
             <iframe id="pdf-frame" src="" frameborder="0"></iframe>
         </div>
     </div>
 
-    <!-- PERFORMANCE: Use 'defer' to ensure script runs after HTML parsing without blocking -->
+    <!-- ======================= FOOTER START ======================= -->
+    <footer>
+        <p>
+            © 2025 <span class="footer-name">SkyPlay-Code</span> | 
+            <a href="https://github.com/SkyPlay-Code/pdf-library" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i> View Source Code
+            </a>
+        </p>
+    </footer>
+    <!-- ======================= FOOTER END ========================= -->
+
     <script src="script.js" defer></script>
 </body>
 </html>
