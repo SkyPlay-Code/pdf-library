@@ -13,12 +13,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
-    <!-- PERFORMANCE: Async CSS Loading -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- UPDATED: Added Playfair Display font for headings -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     </noscript>
 
@@ -38,10 +38,14 @@
 
     <main>
         <div class="main-container">
-            <div id="tab-container" class="tab-container"></div>
-            <h2 id="current-category-title" class="category-title"></h2>
+            <div id="primary-tab-container" class="primary-tab-container"></div>
+            <div id="secondary-tab-container" class="secondary-tab-container"></div>
             
-            <!-- NEW: Skeleton Loader for improved perceived performance -->
+            <!-- UPDATED: Added a span for smoother text animation -->
+            <h2 id="current-category-title" class="category-title">
+                <span id="category-title-text"></span>
+            </h2>
+            
             <div id="grid-loader" class="grid-container">
                 <div class="skeleton-card"></div>
                 <div class="skeleton-card"></div>
@@ -55,12 +59,11 @@
         </div>
     </main>
 
-    <!-- The Modal -->
+    <!-- The Modal (Unchanged) -->
     <div id="pdf-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-title"></h2>
-                <!-- NEW: Direct download link inside the modal -->
                 <a id="modal-download-link" href="#" download class="modal-download-btn">
                     <i class="fas fa-download"></i> Download
                 </a>
@@ -74,7 +77,7 @@
         </div>
     </div>
 
-    <!-- ======================= FOOTER START ======================= -->
+    <!-- FOOTER (Unchanged) -->
     <footer>
         <p>
             © 2025 <span class="footer-name">SkyPlay-Code</span> | 
@@ -83,7 +86,6 @@
             </a>
         </p>
     </footer>
-    <!-- ======================= FOOTER END ========================= -->
 
     <script src="script.js" defer></script>
 </body>

@@ -8,533 +8,112 @@
     --border-color: #2c2c2c;
     --shadow-color: rgba(0, 0, 0, 0.5);
     --glow-color: rgba(3, 218, 198, 0.4);
+    --font-body: 'Poppins', sans-serif;
+    --font-heading: 'Playfair Display', serif;
 }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-body); color: var(--text-color); background-color: var(--bg-color); background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><g fill-opacity=".05" fill="white"><circle r="1" cx="400" cy="400"/><path d="M-1-1v2h2V-1zm3 0v2h2V-1zm3 0v2h2V-1zM-1 2v2h2V2zm3 0v2h2V2zm3 0v2h2V2zM-1 5v2h2V5zm3 0v2h2V5zm3 0v2h2V5z"/></g></svg>'); line-height: 1.6; }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* --- Header --- */
+header { background-color: rgba(26, 26, 26, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 1.5rem 5%; border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); position: sticky; top: 0; z-index: 1000; }
+.header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1200px; margin: 0 auto; }
+header h1 { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, var(--primary-color), #00ffc8, var(--text-color)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-fill-color: transparent; }
+.search-container { position: relative; }
+#searchInput { padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: 50px; border: 1px solid transparent; background-color: #252525; color: var(--text-color); width: 320px; font-size: 1rem; transition: all 0.3s ease-in-out; }
+#searchInput:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px var(--glow-color); }
+.search-container i { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #888; }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    color: var(--text-color);
-    background-color: var(--bg-color);
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><g fill-opacity=".05" fill="white"><circle r="1" cx="400" cy="400"/><path d="M-1-1v2h2V-1zm3 0v2h2V-1zm3 0v2h2V-1zM-1 2v2h2V2zm3 0v2h2V2zm3 0v2h2V2zM-1 5v2h2V5zm3 0v2h2V5zm3 0v2h2V5z"/></g></svg>');
-    line-height: 1.6;
-}
+/* --- Main Content --- */
+main { padding: 2rem 5%; }
+.main-container { max-width: 1200px; margin: 0 auto; }
 
-/* --- Header "Frosted Glass" effect --- */
-header {
-    background-color: rgba(26, 26, 26, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 1.5rem 5%;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+/* --- Title Animation --- */
+.category-title { font-family: var(--font-heading); font-size: 2.8rem; font-weight: 700; text-align: center; margin-bottom: 2rem; color: var(--text-color); text-shadow: 0 0 10px rgba(255, 255, 255, 0.1); overflow: hidden; height: 60px; display: flex; justify-content: center; align-items: center; }
+#category-title-text { display: inline-block; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease; transform: translateY(0); opacity: 1; }
+#category-title-text.fade-out { transform: translateY(30px); opacity: 0; }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-header h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--primary-color), #00ffc8, var(--text-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
-}
-
-.search-container {
-    position: relative;
-}
-
-#searchInput {
-    padding: 0.8rem 1rem 0.8rem 2.8rem;
-    border-radius: 50px;
-    border: 1px solid transparent;
-    background-color: #252525;
-    color: var(--text-color);
-    width: 320px;
-    font-size: 1rem;
-    transition: all 0.3s ease-in-out;
-}
-
-#searchInput:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px var(--glow-color);
-}
-
-.search-container i {
-    position: absolute;
-    left: 1.2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-}
-
-/* --- Main Content & Layout --- */
-main {
-    padding: 2rem 5%;
-}
-
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.category-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 2rem;
-    color: var(--text-color);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* --- Tabs --- */
-.tab-container {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.tab-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-color);
-    background-color: var(--card-color);
-    border: 1px solid var(--border-color);
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.tab-button.active {
-    background: var(--primary-color);
-    color: #000;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px var(--glow-color);
-}
-
+/* --- Nested Tabs Styling --- */
+.primary-tab-container, .secondary-tab-container { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.primary-tab-container { margin-bottom: 1.5rem; }
+.secondary-tab-container { margin-bottom: 2.5rem; }
+.tab-button { padding: 0.8rem 1.5rem; font-weight: 600; color: var(--text-color); background-color: var(--card-color); border: 1px solid var(--border-color); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+.tab-button.primary { font-size: 1.1rem; }
+.tab-button.secondary { font-size: 0.9rem; padding: 0.6rem 1.2rem; background-color: #161616; }
+.tab-button.active { background: var(--primary-color); color: #000; border-color: var(--primary-color); box-shadow: 0 0 15px var(--glow-color); }
 
 /* --- Skeleton Loader --- */
-.skeleton-card {
-    background-color: var(--card-color);
-    border-radius: 12px;
-    height: 380px; /* Approximate height of a real card */
-    background: linear-gradient(90deg, #1a1a1a 25%, #222222 50%, #1a1a1a 75%);
-    background-size: 200% 100%;
-    animation: skeleton-shine 1.5s linear infinite;
-}
+.skeleton-card { background-color: var(--card-color); border-radius: 12px; height: 380px; background: linear-gradient(90deg, #1a1a1a 25%, #222222 50%, #1a1a1a 75%); background-size: 200% 100%; animation: skeleton-shine 1.5s linear infinite; }
+@keyframes skeleton-shine { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
-@keyframes skeleton-shine {
-    from {
-        background-position: 200% 0;
-    }
-    to {
-        background-position: -200% 0;
-    }
-}
+/* --- PDF Grid & Cards --- */
+.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; }
+.pdf-card { background-color: var(--card-color); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px var(--shadow-color); display: flex; flex-direction: column; border: 1px solid var(--border-color); opacity: 0; animation: cardFadeIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; position: relative; transition: transform 0.2s ease-out, box-shadow 0.4s ease; }
+.pdf-card:active { transform: scale(0.97); transition-duration: 0.1s; }
+.pdf-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 12px; border: 2px solid transparent; background: linear-gradient(120deg, var(--primary-color), #00ff87, var(--primary-variant-color)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+.pdf-card .cover-image { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--border-color); background-color: #333; }
+.card-header-no-image { height: 200px; background: linear-gradient(-45deg, var(--primary-color), var(--primary-variant-color), #045de9, var(--primary-color)); background-size: 400% 400%; animation: gradientBG 15s ease infinite; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; }
+.chapter-number { font-size: 6rem; font-weight: 700; color: rgba(255, 255, 255, 0.9); line-height: 1; text-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+.chapter-subject { font-size: 1.1rem; font-weight: 600; color: rgba(255, 255, 255, 0.95); margin-top: -0.8rem; text-transform: uppercase; letter-spacing: 1px; }
 
-
-/* --- PDF Grid & Upgraded Cards --- */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2.5rem;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.pdf-card {
-    background-color: var(--card-color);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px var(--shadow-color);
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border-color);
-    opacity: 0;
-    animation: cardFadeIn 0.5s ease-out forwards;
-    position: relative;
-    /* MOBILE-FRIENDLY: Transition for active state */
-    transition: transform 0.2s ease-out, box-shadow 0.4s ease;
-}
-
-.pdf-card:active {
-    /* MOBILE-FRIENDLY: Instant feedback on tap */
-    transform: scale(0.97);
-    transition-duration: 0.1s;
-}
-
-/* Glowing border effect */
-.pdf-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    background: linear-gradient(120deg, var(--primary-color), #00ff87, var(--primary-variant-color)) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none; /* Make sure it doesn't interfere with clicks */
-}
-
-/* Cover Image & No-Image Header */
-.pdf-card .cover-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-bottom: 1px solid var(--border-color);
-    background-color: #333;
-}
-.card-header-no-image {
-    height: 200px;
-    background: linear-gradient(-45deg, var(--primary-color), var(--primary-variant-color), #045de9, var(--primary-color));
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 1rem;
-}
-.chapter-number {
-    font-size: 6rem;
+/* --- NEW: Smart header text style --- */
+.subject-abbreviation {
     font-weight: 700;
     color: rgba(255, 255, 255, 0.9);
-    line-height: 1;
+    line-height: 1.1;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.chapter-subject {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    margin-top: -0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    /* Responsive font size for text */
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    margin-bottom: 0.5rem;
 }
 
-
-/* Category Tag for search results */
-.category-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--primary-color);
-    color: #111;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
+/* Category Tag */
+.category-tag { position: absolute; top: 10px; right: 10px; background-color: var(--primary-color); color: #111; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 600; border-radius: 20px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); }
 
 /* Card Content & Buttons */
-.card-content {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-.card-content h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
-}
-.card-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-}
-.card-buttons button, .card-buttons a {
-    padding: 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border: none;
-}
-.preview-btn {
-    background-color: var(--primary-color);
-    color: #111;
-}
-.download-btn {
-    background-color: transparent;
-    border: 2px solid var(--primary-variant-color);
-    color: var(--text-color);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Download Button Active State */
-.download-btn.is-downloading {
-    pointer-events: none;
-    background-color: var(--primary-variant-color);
-    color: white;
-}
-.download-btn .btn-text, .download-btn .fa-download {
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.download-btn.is-downloading .btn-text, .download-btn.is-downloading .fa-download {
-    opacity: 0;
-    transform: translateY(10px);
-}
-.download-btn .btn-loader {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 0;
-    width: 24px; height: 24px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.download-btn.is-downloading .btn-loader {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* Enhanced "No Results" message */
-.no-results {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: #888;
-    padding: 3rem;
-}
-.no-results i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    display: block;
-}
+.card-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+.card-content h3 { font-size: 1.25rem; margin-bottom: 1.5rem; flex-grow: 1; }
+.card-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+/* --- NEW: Style for when there is only one button --- */
+.card-buttons.single-button { grid-template-columns: 1fr; padding: 0 2rem; /* Give it some horizontal padding to look centered */ }
+.card-buttons button, .card-buttons a { padding: 0.8rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; text-align: center; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; }
+.preview-btn { background-color: var(--primary-color); color: #111; }
+.download-btn { background-color: transparent; border: 2px solid var(--primary-variant-color); color: var(--text-color); position: relative; overflow: hidden; }
+.download-btn.is-downloading { pointer-events: none; background-color: var(--primary-variant-color); color: white; }
+.download-btn .btn-text, .download-btn .fa-download { transition: opacity 0.2s ease, transform 0.2s ease; }
+.download-btn.is-downloading .btn-text, .download-btn.is-downloading .fa-download { opacity: 0; transform: translateY(10px); }
+.download-btn .btn-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; width: 24px; height: 24px; border: 3px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; transition: opacity 0.3s ease, transform 0.3s ease; }
+.download-btn.is-downloading .btn-loader { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.no-results { grid-column: 1 / -1; text-align: center; color: #888; padding: 3rem; }
+.no-results i { font-size: 4rem; margin-bottom: 1rem; display: block; }
 
 /* --- PDF Preview Modal --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    animation: fadeInModalBg 0.4s ease;
-}
-.modal-content {
-    background-color: var(--bg-color);
-    margin: 2% auto;
-    width: 95%; max-width: 1400px; height: 95%;
-    display: flex; flex-direction: column;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-    animation: slideInFromTop 0.5s ease-out;
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-    background-color: var(--card-color);
-    border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0;
-}
-#modal-title {
-    font-size: 1.2rem;
-    color: var(--primary-color);
-    margin-right: auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 1rem;
-}
-#modal-download-link {
-    color: var(--text-color);
-    background-color: var(--primary-variant-color);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 600;
-    margin-right: 1.5rem;
-    flex-shrink: 0; /* Prevents button from shrinking */
-    transition: filter 0.3s ease;
-}
-
-.close-button {
-    color: #aaa;
-    font-size: 2.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s, transform 0.3s ease;
-    line-height: 1; /* Aligns the '×' better */
-}
-
-/* PDF Viewer and Loader */
+.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); animation: fadeInModalBg 0.4s ease; }
+.modal-content { background-color: var(--bg-color); margin: 2% auto; width: 95%; max-width: 1400px; height: 95%; display: flex; flex-direction: column; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 0 40px rgba(0,0,0,0.7); animation: slideInFromTop 0.5s ease-out; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background-color: var(--card-color); border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+#modal-title { font-family: var(--font-body); font-size: 1.2rem; color: var(--primary-color); margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem; }
+#modal-download-link { color: var(--text-color); background-color: var(--primary-variant-color); text-decoration: none; padding: 0.5rem 1rem; border-radius: 5px; font-weight: 600; margin-right: 1.5rem; flex-shrink: 0; transition: filter 0.3s ease; }
+.close-button { color: #aaa; font-size: 2.5rem; font-weight: bold; cursor: pointer; transition: color 0.3s, transform 0.3s ease; line-height: 1; }
 #pdf-frame { flex-grow: 1; border: none; visibility: hidden; }
 .loader-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 1rem; color: var(--text-color); }
 .loader { border: 8px solid #333; border-top: 8px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
 
-
 /* --- DESKTOP HOVER STATES --- */
-/* Only apply hover effects on devices that can actually hover */
 @media (hover: hover) {
-    .tab-button:hover {
-        color: white;
-        background-color: #2a2a2a;
-        box-shadow: 0 0 15px var(--glow-color);
-        transform: translateY(-2px);
-    }
-    .pdf-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px var(--shadow-color);
-    }
-    .pdf-card:hover::before {
-        opacity: 1;
-    }
-    .preview-btn:hover, .download-btn:hover {
-        transform: scale(1.05);
-        filter: brightness(1.2);
-    }
-    #modal-download-link:hover {
-        filter: brightness(1.2);
-    }
-    .close-button:hover, .close-button:focus {
-        color: var(--primary-color);
-        transform: rotate(90deg);
-    }
+    .tab-button:hover { color: white; background-color: #2a2a2a; box-shadow: 0 0 15px var(--glow-color); transform: translateY(-2px); }
+    .pdf-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px var(--shadow-color); }
+    .pdf-card:hover::before { opacity: 1; }
+    .preview-btn:hover, .download-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+    #modal-download-link:hover { filter: brightness(1.2); }
+    .close-button:hover, .close-button:focus { color: var(--primary-color); transform: rotate(90deg); }
 }
 
-
-/* --- Keyframes for animations --- */
+/* --- Keyframes & Responsiveness --- */
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes cardFadeIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes cardFadeIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes fadeInModalBg { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideInFromTop { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@media (max-width: 768px) { #searchInput { width: 100%; } .header-content { justify-content: center; } .modal-content { margin: 0; width: 100%; height: 100%; border-radius: 0; } .modal-header { padding: 0.75rem 1rem; } #modal-title { font-size: 1rem; } #modal-download-link { margin-right: 1rem; } }
 
-/* --- Responsiveness --- */
-@media (max-width: 768px) {
-    #searchInput { width: 100%; }
-    .header-content { justify-content: center; }
-    .modal-content { margin: 0; width: 100%; height: 100%; border-radius: 0; }
-    .modal-header { padding: 0.75rem 1rem; }
-    #modal-title { font-size: 1rem; }
-    #modal-download-link { margin-right: 1rem; }
-}
-
-/* --- ================== BREATHTAKING FOOTER v2 ================== --- */
-
-/* Keyframe animation for the "stardust" text effect */
-@keyframes stardust {
-  0% {
-    text-shadow: 0 0 10px #222, 0 0 20px #333, 0 0 40px rgba(0, 191, 255, 0); /* Start subtle */
-  }
-  50% {
-    text-shadow: 0 0 10px #222, 0 0 20px #333, 0 0 30px #00BFFF, 0 0 50px #00BFFF; /* Bright blue glow */
-  }
-  100% {
-    text-shadow: 0 0 10px #222, 0 0 20px #333, 0 0 40px rgba(0, 191, 255, 0); /* Fade back to subtle */
-  }
-}
-
-footer {
-    padding: 3.5rem 1rem; /* Increased padding for more presence */
-    margin-top: 4rem;
-    text-align: center;
-    background: linear-gradient(to top, #0A0A10, #101010); /* Deep space gradient */
-    border-top: 1px solid var(--border-color);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Optional: Subtle shooting star effect for the background */
-footer::before {
-    content: '';
-    position: absolute;
-    top: 30%;
-    left: -100%;
-    width: 30%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(200, 200, 255, 0.3), transparent);
-    animation: shooting-star 12s linear infinite;
-    animation-delay: 3s; /* Delay start */
-}
-@keyframes shooting-star {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(80vw); }
-}
-
-
-footer p {
-    color: #999; /* Softer text color for the non-important parts */
-    font-size: 1.1rem;
-    position: relative; /* Keep it above the pseudo-elements */
-}
-
-/* --- THE MAIN EVENT: The Animated Name --- */
-.footer-name {
-    font-weight: 700;
-    font-size: 1.15em; /* Make it slightly larger */
-    color: #E0E0E0; /* Clean, bright white base */
-    /* THE ANIMATION: Apply the keyframes defined above */
-    animation: stardust 4s infinite linear;
-    transition: color 0.3s ease; /* Smooth transition */
-}
-
-/* --- The Link Style --- */
-footer a {
-    color: #999; /* Match the paragraph text color */
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    margin-left: 0.5rem;
-}
-
-/* Make the link glow on hover */
-footer a:hover {
-    color: #fff; /* Bright white on hover */
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* White glow */
-}
-
-footer a .fab {
-    margin-right: 0.4rem;
-    color: #ccc;
-    transition: all 0.3s ease;
-}
-
-footer a:hover .fab {
-    color: #fff; /* Icon also gets brighter */
-    transform: scale(1.1);
-}
+/* --- FOOTER (Unchanged) --- */
+@keyframes stardust{0%{text-shadow:0 0 10px #222,0 0 20px #333,0 0 40px rgba(0,191,255,0)}50%{text-shadow:0 0 10px #222,0 0 20px #333,0 0 30px #00BFFF,0 0 50px #00BFFF}100%{text-shadow:0 0 10px #222,0 0 20px #333,0 0 40px rgba(0,191,255,0)}}footer{padding:3.5rem 1rem;margin-top:4rem;text-align:center;background:linear-gradient(to top,#0A0A10,#101010);border-top:1px solid var(--border-color);position:relative;overflow:hidden}footer::before{content:'';position:absolute;top:30%;left:-100%;width:30%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,200,255,.3),transparent);animation:shooting-star 12s linear infinite;animation-delay:3s}@keyframes shooting-star{0%{transform:translateX(0)}100%{transform:translateX(80vw)}}footer p{color:#999;font-size:1.1rem;position:relative}.footer-name{font-weight:700;font-size:1.15em;color:#E0E0E0;animation:stardust 4s infinite linear;transition:color .3s ease}footer a{color:#999;text-decoration:none;font-weight:600;transition:all .3s ease;margin-left:.5rem}footer a:hover{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.7)}footer a .fab{margin-right:.4rem;color:#ccc;transition:all .3s ease}footer a:hover .fab{color:#fff;transform:scale(1.1)}
