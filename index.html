@@ -1,88 +1,114 @@
+<!-- --- START OF FILE index.html --- -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" id="theme-color-meta" content="#03dac6">
-    <title>My PDF Library</title>
+    <meta name="theme-color" id="theme-color-meta" content="#212336">
+    <title> PDF Library</title>
     
     <link rel="icon" type="image/png" href="online-library.png">
     
-    <!-- PERFORMANCE: Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
-    <!-- UPDATED: Added Playfair Display font for headings -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    </noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="header-content">
-            <h1>PDF Library</h1>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search for any chapter or book...">
-                <i class="fas fa-search"></i>
+    <div class="cursor-light"></div>
+
+    <div class="gradient-bg"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-rocket"></i>
+                <h2>PDF Library</h2>
+                <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
             </div>
-        </div>
-    </header>
+            <nav id="sidebar-nav" class="sidebar-nav"></nav>
+        </aside>
 
-    <main>
-        <div class="main-container">
-            <div id="primary-tab-container" class="primary-tab-container"></div>
-            <div id="secondary-tab-container" class="secondary-tab-container"></div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol id="breadcrumbs" class="breadcrumbs"></ol>
+                    </nav>
+                    <h1 id="content-title"></h1>
+                </div>
+                <div class="header-actions">
+                    <button id="search-button" class="search-button">
+                        <i class="fas fa-search"></i>
+                        <span>Search...</span>
+                        <kbd>⌘K</kbd>
+                    </button>
+                </div>
+            </header>
             
-            <!-- UPDATED: Added a span for smoother text animation -->
-            <h2 id="current-category-title" class="category-title">
-                <span id="category-title-text"></span>
-            </h2>
-            
-            <div id="grid-loader" class="grid-container">
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
+            <div id="grid-container" class="grid-container">
+                <!-- Skeletons will be injected here by JS -->
             </div>
+        </main>
+    </div>
 
-            <div id="pdf-grid" class="grid-container" style="display: none;"></div>
-        </div>
-    </main>
-
-    <!-- The Modal (Unchanged) -->
-    <div id="pdf-modal" class="modal">
+    <!-- The PDF Viewer Modal -->
+    <div id="pdf-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-title"></h2>
-                <a id="modal-download-link" href="#" download class="modal-download-btn">
-                    <i class="fas fa-download"></i> Download
-                </a>
-                <span class="close-button">×</span>
+                <div class="modal-actions">
+                    <a id="modal-download-link" href="#" download class="modal-button download">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                    <button class="modal-button close-button" aria-label="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
             <div class="loader-container" id="pdf-loader">
                 <div class="loader"></div>
-                <p>Loading Preview...</p>
             </div>
-            <iframe id="pdf-frame" src="" frameborder="0"></iframe>
+            <!-- FIX: Removed obsolete frameborder="0". This is handled by CSS. -->
+            <iframe id="pdf-frame" src=""></iframe>
         </div>
     </div>
-
-    <!-- FOOTER (Unchanged) -->
+    
+    <!-- The Command Palette Modal -->
+    <div id="command-palette" class="modal-overlay">
+        <div class="command-palette-content">
+            <div class="command-palette-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="command-search-input" placeholder="Search the entire library..." autocomplete="off">
+            </div>
+            <ul id="command-results" class="command-palette-results" role="listbox">
+                <!-- Search results will be injected here -->
+            </ul>
+            <div id="command-no-results" class="command-palette-empty">
+                <p>No results found. Try a different query.</p>
+            </div>
+             <div class="command-palette-footer">
+                <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
+                <span><kbd>Enter</kbd> to open</span>
+                <span><kbd>Esc</kbd> to close</span>
+            </div>
+        </div>
+    </div>
+    
     <footer>
         <p>
             © 2025 <span class="footer-name">SkyPlay-Code</span> | 
-            <a href="https://github.com/SkyPlay-Code/pdf-library" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-github"></i> View Source Code
+            <!-- FIX: Added aria-label for better accessibility. -->
+            <a href="https://github.com/SkyPlay-Code/pdf-library" target="_blank" rel="noopener noreferrer" aria-label="View source code on GitHub">
+                <i class="fab fa-github"></i> View on GitHub
             </a>
         </p>
     </footer>
