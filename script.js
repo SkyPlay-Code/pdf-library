@@ -1,6 +1,7 @@
 // --- START OF FILE script.js ---
 
 // --- 1. DATA STRUCTURE (Unchanged) ---
+// --- 1. DATA STRUCTURE (Unchanged) ---
 const subjects = [
     {
         subjectName: "Chemistry",
@@ -96,6 +97,45 @@ const subjects = [
             }
         ]
     },
+    // --- NEW SUBJECT ADDED HERE ---
+    {
+        subjectName: "English",
+        icon: "fa-solid fa-book",
+        theme: { primary: '#9C27B0', variant: '#7B1FA2' },
+        categories: [
+            {
+                categoryName: "Hornbill (Main Reader)",
+                subjectForDisplay: "English Chapter",
+                books: [
+                    { id: 701, title: "Ch 1: The Portrait of a Lady", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb101.pdf", keywords: ["hornbill", "portrait", "lady", "chapter 1"] },
+                    { id: 702, title: "Ch 2: We’re Not Afraid to Die...", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb102.pdf", keywords: ["hornbill", "afraid", "die", "chapter 2"] },
+                    { id: 703, title: "Ch 3: Discovering Tut: the Saga Continues", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb103.pdf", keywords: ["hornbill", "tut", "saga", "chapter 3"] },
+                    // { id: 704, title: "Ch 4: Landscape of the Soul", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb104.pdf", keywords: ["hornbill", "landscape", "soul", "chapter 4"] },
+                    { id: 705, title: "Ch 4: The Ailing Planet", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb105.pdf", keywords: ["hornbill", "ailing", "planet", "chapter 4"] },
+                    // { id: 706, title: "Ch 6: The Browning Version", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb106.pdf", keywords: ["hornbill", "browning", "version", "chapter 6"] },
+                    { id: 707, title: "Ch 5: The Adventure", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb107.pdf", keywords: ["hornbill", "adventure", "chapter 5"] },
+                    { id: 708, title: "Ch 6: Silk Road", fileUrl: "https://ncert.nic.in/textbook/pdf/kehb108.pdf", keywords: ["hornbill", "silk", "road", "chapter 6"] },
+                    { id: 709, title: "NCERT Hornbill Class 11 (Full Book)", fileUrl: "https://archive.org/download/english11_202511/kehb-full.pdf", coverImage: "https://ncert.nic.in/textbook/pdf/kehb1cc.jpg", keywords: ["full book", "hornbill"] },
+                ]
+            },
+            {
+                categoryName: "Snapshots (Supplementary)",
+                subjectForDisplay: "English Chapter",
+                books: [
+                    { id: 801, title: "Ch 1: The Summer of the Beautiful White Horse", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp101.pdf", keywords: ["snapshots", "summer", "horse", "chapter 1"] },
+                    { id: 802, title: "Ch 2: The Address", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp102.pdf", keywords: ["snapshots", "address", "chapter 2"] },
+                    // { id: 803, title: "Ch 3: Ranga’s Marriage", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp103.pdf", keywords: ["snapshots", "ranga", "marriage", "chapter 3"] },
+                    // { id: 804, title: "Ch 4: Albert Einstein at School", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp104.pdf", keywords: ["snapshots", "einstein", "school", "chapter 4"] },
+                    { id: 805, title: "Ch 3: Mother’s Day", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp105.pdf", keywords: ["snapshots", "mother", "day", "chapter 3"] },
+                    // { id: 806, title: "Ch 6: The Ghat of the Only World", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp106.pdf", keywords: ["snapshots", "ghat", "world", "chapter 6"] },
+                    { id: 807, title: "Ch 4: Birth", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp107.pdf", keywords: ["snapshots", "birth", "chapter 4"] },
+                    { id: 808, title: "Ch 5: The Tale of Melon City", fileUrl: "https://ncert.nic.in/textbook/pdf/kesp108.pdf", keywords: ["snapshots", "melon", "city", "chapter 5"] },
+                    { id: 809, title: "NCERT Snapshots Class 11 (Full Book)", fileUrl: "https://archive.org/download/english11_202511/kesp-full.pdf", coverImage: "https://ncert.nic.in/textbook/pdf/kesp1cc.jpg", keywords: ["full book", "snapshots"] },
+                ]
+            }
+        ]
+    },
+    // --- END OF NEW SUBJECT ---
     { 
         subjectName: "SSM",
         icon: "fa-solid fa-file-signature",
