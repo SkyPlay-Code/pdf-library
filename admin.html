@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #2c3e50; --accent: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; height: 100vh; margin: 0; }
+        
+        /* Layout */
+        .left-panel { width: 50%; padding: 30px; overflow-y: auto; border-right: 2px solid #ddd; }
+        .right-panel { width: 50%; padding: 0; background: #282c34; color: #abb2bf; position: relative; display: flex; flex-direction: column; }
+        
+        h2 { color: var(--primary); border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        
+        /* Form Groups */
+        .form-group { margin-bottom: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
+        .btn-green { background: var(--accent); width: 100%; font-size: 1.1rem; }
+        .btn-green:hover { background: #219150; }
+        .btn-blue { background: #3498db; }
+        
+        /* Code Editor Look */
+        #jsonOutput { width: 100%; flex: 1; background: transparent; border: none; color: #98c379; padding: 20px; font-family: 'Consolas', monospace; resize: none; font-size: 14px; outline: none; }
+        .copy-bar { background: #21252b; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; }
+        .hidden { display: none; }
+        
+        .tag-container { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+        .tag { background: #e0e0e0; padding: 5px 10px; border-radius: 15px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+        .tag span { cursor: pointer; color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- Left: Data Entry Form -->
+    <div class="left-panel">
+        <h2><i class="fa-solid fa-database"></i> Add New Resource</h2>
+
+        <!-- Step 1: Select or Create Subject -->
+        <div class="form-group">
+            <label>1. Select Subject</label>
+            <select id="subjectSelect" onchange="handleSubjectChange()">
+                <!-- Populated by JS -->
+            </select>
+            <div id="newSubjectBox" class="hidden" style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                <input type="text" id="newSubjectName" placeholder="New Subject Name">
+                <input type="text" id="newSubjectIcon" placeholder="Icon Class (e.g. fa-solid fa-flask)">
+                <input type="color" id="newSubjectColor" value="#ff0000" title="Primary Color">
+            </div>
+            <button class="btn btn-blue" onclick="toggleNewSubject()" style="margin-top:5px; font-size:0.8rem;">+ Create New Subject</button>
+        </div>
+
+        <!-- Step 2: Select or Create Category -->
+        <div class="form-group">
+            <label>2. Select Section / Category</label>
+            <select id="categorySelect">
+                <!-- Populated by JS -->
+            </select>
+            <div id="newCategoryBox" class="hidden" style="margin-top:10px;">
+                <input type="text" id="newCategoryName" placeholder="New Section Name (e.g. Class 12)">
+                <input type="text" id="newDisplayTag" placeholder="Card Subtext (e.g. Chemistry Chapter)">
+            </div>
+            <button class="btn btn-blue" onclick="toggleNewCategory()" style="margin-top:5px; font-size:0.8rem;">+ Create New Section</button>
+        </div>
+
+        <!-- Step 3: Book Details -->
+        <div class="form-group">
+            <label>3. Document Details</label>
+            
+            <div class="row">
+                <div class="col"><input type="number" id="bookId" placeholder="ID (Auto-calc)"></div>
+            </div>
+            
+            <input type="text" id="bookTitle" placeholder="Title (e.g. Chapter 1: Solids)">
+            <input type="text" id="bookUrl" placeholder="Google Drive / PDF URL">
+            <input type="text" id="bookImage" placeholder="Cover Image URL (Optional)">
+            
+            <label>Keywords (Press Enter)</label>
+            <input type="text" id="keywordInput" placeholder="Type keyword and hit Enter">
+            <div class="tag-container" id="tagContainer"></div>
+
+            <button class="btn btn-green" onclick="generateAndSave()"><i class="fa-solid fa-check"></i> Add to Data</button>
+        </div>
+
+        <div class="form-group" style="background:#fff3cd; border:1px solid #ffeeba;">
+            <small><strong>Note:</strong> Since this is a static site, I cannot write to the file for you. After clicking "Add to Data", the code on the right updates. Click <strong>COPY CODE</strong> and overwrite your <code>data.js</code> file.</small>
+        </div>
+    </div>
+
+    <!-- Right: The Generated Code -->
+    <div class="right-panel">
+        <div class="copy-bar">
+            <span>data.js Preview</span>
+            <button class="btn btn-blue" onclick="copyToClipboard()">COPY CODE</button>
+        </div>
+        <textarea id="jsonOutput" readonly></textarea>
+    </div>
+
+    <!-- Load the existing data first -->
+    <script src="data.js"></script> 
+    
+    <script>
+        // === STATE ===
+        let currentKeywords = [];
+        
+        // FIX: Check if subjects exists without trying to re-declare it
+        if (typeof subjects === 'undefined') {
+            alert("Error: data.js not found in the same folder.");
+            window.subjects = []; // Attach to window instead of using 'var'
+        }
+
+        // === INIT ===
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshDropdowns();
+            suggestNextId();
+            updateOutputPreview();
+        });
+
+        // === DOM FUNCTIONS ===
+
+        function refreshDropdowns() {
+            const subSelect = document.getElementById('subjectSelect');
+            const catSelect = document.getElementById('categorySelect');
+            
+            // Fill Subjects
+            subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+            subjects.forEach((sub, index) => {
+                subSelect.innerHTML += `<option value="${index}">${sub.subjectName}</option>`;
+            });
+            
+            // Trigger category update
+            handleSubjectChange();
+        }
+
+        function handleSubjectChange() {
+            const subIndex = document.getElementById('subjectSelect').value;
+            const catSelect = document.getElementById('categorySelect');
+            
+            catSelect.innerHTML = ''; // Clear
+
+            if(subIndex === "") return;
+
+            const selectedSubject = subjects[subIndex];
+            selectedSubject.categories.forEach((cat, index) => {
+                catSelect.innerHTML += `<option value="${index}">${cat.categoryName}</option>`;
+            });
+        }
+
+        function toggleNewSubject() {
+            document.getElementById('newSubjectBox').classList.toggle('hidden');
+            document.getElementById('subjectSelect').classList.toggle('hidden');
+        }
+
+        function toggleNewCategory() {
+            document.getElementById('newCategoryBox').classList.toggle('hidden');
+            document.getElementById('categorySelect').classList.toggle('hidden');
+        }
+
+        // Keywords Input Logic
+        document.getElementById('keywordInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const val = this.value.trim();
+                if(val && !currentKeywords.includes(val)) {
+                    currentKeywords.push(val);
+                    renderTags();
+                    this.value = '';
+                }
+            }
+        });
+
+        function renderTags() {
+            const container = document.getElementById('tagContainer');
+            container.innerHTML = '';
+            currentKeywords.forEach(k => {
+                container.innerHTML += `<div class="tag">${k} <span onclick="removeTag('${k}')">&times;</span></div>`;
+            });
+        }
+
+        window.removeTag = function(k) {
+            currentKeywords = currentKeywords.filter(item => item !== k);
+            renderTags();
+        };
+
+        // ID Calculator
+        function suggestNextId() {
+            let maxId = 0;
+            if (subjects && subjects.length > 0) {
+                subjects.forEach(sub => {
+                    if (sub.categories) {
+                        sub.categories.forEach(cat => {
+                            if (cat.books) {
+                                cat.books.forEach(b => {
+                                    if(b.id > maxId) maxId = b.id;
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            document.getElementById('bookId').value = maxId + 1;
+        }
+
+        // === MAIN LOGIC ===
+
+        window.generateAndSave = function() {
+            const subSelectIndex = document.getElementById('subjectSelect').value;
+            const catSelectIndex = document.getElementById('categorySelect').value;
+            
+            const newSubName = document.getElementById('newSubjectName').value;
+            const newCatName = document.getElementById('newCategoryName').value;
+
+            // 1. Prepare the Book Object
+            const newBook = {
+                id: parseInt(document.getElementById('bookId').value),
+                title: document.getElementById('bookTitle').value,
+                fileUrl: document.getElementById('bookUrl').value,
+                keywords: [...currentKeywords]
+            };
+
+            const coverImg = document.getElementById('bookImage').value;
+            if(coverImg) newBook.coverImage = coverImg;
+
+            // Validation
+            if(!newBook.title || !newBook.fileUrl) {
+                alert("Please fill Title and URL");
+                return;
+            }
+
+            // 2. Logic: Where to add?
+            
+            // Case A: Creating a New Subject
+            if(!document.getElementById('newSubjectBox').classList.contains('hidden')) {
+                if(!newSubName) { alert("Subject Name required"); return; }
+                
+                const newSubject = {
+                    subjectName: newSubName,
+                    icon: document.getElementById('newSubjectIcon').value || "fa-solid fa-folder",
+                    theme: { primary: document.getElementById('newSubjectColor').value, variant: document.getElementById('newSubjectColor').value },
+                    categories: [
+                        {
+                            categoryName: newCatName || "General",
+                            subjectForDisplay: newSubName,
+                            books: [newBook]
+                        }
+                    ]
+                };
+                subjects.push(newSubject);
+            }
+            // Case B: Existing Subject, New Category
+            else if(!document.getElementById('newCategoryBox').classList.contains('hidden')) {
+                if(!newCatName) { alert("Category Name required"); return; }
+                const subject = subjects[subSelectIndex];
+                
+                subject.categories.push({
+                    categoryName: newCatName,
+                    subjectForDisplay: subject.subjectName + " Chapter",
+                    books: [newBook]
+                });
+            }
+            // Case C: Existing Subject, Existing Category
+            else {
+                if(subSelectIndex === "" || catSelectIndex === "") { alert("Select Subject & Category"); return; }
+                
+                const subject = subjects[subSelectIndex];
+                const category = subject.categories[catSelectIndex];
+                
+                category.books.push(newBook);
+            }
+
+            // 3. Update UI
+            updateOutputPreview();
+            alert("Added! Copy the code on the right and replace content in data.js");
+            
+            // Reset fields
+            document.getElementById('bookTitle').value = "";
+            document.getElementById('bookUrl').value = "";
+            currentKeywords = [];
+            renderTags();
+            suggestNextId();
+            // Don't refresh dropdowns fully to keep selection state, just re-calc output
+        };
+
+        function updateOutputPreview() {
+            const jsonStr = JSON.stringify(subjects, null, 4);
+            document.getElementById('jsonOutput').value = `const subjects = ${jsonStr};`;
+        }
+
+        window.copyToClipboard = function() {
+            const copyText = document.getElementById("jsonOutput");
+            copyText.select();
+            document.execCommand("copy");
+            const btn = document.querySelector('.copy-bar button');
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            setTimeout(() => btn.innerText = originalText, 2000);
+        };
+    </script>
+</body>
+</html>

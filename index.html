@@ -1,118 +1,78 @@
-<!-- --- START OF FILE index.html --- -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" id="theme-color-meta" content="#212336">
-    <title> PDF Library</title>
-    
-    <link rel="icon" type="image/png" href="online-library.png">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap">
+    <link rel="icon" href="online-library.png" type="image/png">
+    <title>PDF Archive Hub v2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="cursor-light"></div>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo-area">
+            <i class="fa-solid fa-graduation-cap"></i> Archive Hub
+        </div>
+        <div class="search-container">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Search title, ID (e.g., '101'), or keyword...">
+            <!-- Button to clear search/filters -->
+            <button id="clearSearchBtn" class="clear-btn" style="display:none;">&times;</button>
+        </div>
+    </header>
 
-    <div class="gradient-bg"></div>
-
-    <div class="app-layout">
-        <!-- Sidebar Navigation -->
+    <div class="main-layout">
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <i class="fa-solid fa-rocket"></i>
-                <h2>PDF Library</h2>
-                <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
-                    <i class="fas fa-chevron-left"></i>
+            <div class="nav-section">
+                <div class="nav-label">MAIN</div>
+                <!-- "All Materials" Button -->
+                <button class="nav-item active" id="btnAllMaterials">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
                 </button>
             </div>
-            <nav id="sidebar-nav" class="sidebar-nav"></nav>
+            
+            <div class="nav-section">
+                <div class="nav-label">SUBJECTS</div>
+                <nav id="subjectNav">
+                    <!-- Javascript will load subjects here -->
+                </nav>
+            </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <header class="content-header">
-                <div>
-                    <nav aria-label="breadcrumb">
-                        <ol id="breadcrumbs" class="breadcrumbs"></ol>
-                    </nav>
-                    <h1 id="content-title"></h1>
-                </div>
-                <div class="header-actions">
-                    <button id="search-button" class="search-button">
-                        <i class="fas fa-search"></i>
-                        <span>Search...</span>
-                        <kbd>⌘K</kbd>
-                    </button>
-                </div>
-            </header>
-            
-            <div id="grid-container" class="grid-container">
-                <!-- Skeletons will be injected here by JS -->
+        <!-- Main Content -->
+        <main class="content-area" id="mainScroll">
+            <div id="welcomeMessage" class="welcome-banner">
+                <h2>Student Archive</h2>
+                <p>Select a subject or use the search bar to find resources.</p>
             </div>
+
+            <!-- This container will hold the structured Groups -->
+            <div id="contentContainer"></div>
         </main>
     </div>
 
-    <!-- The PDF Viewer Modal -->
-    <div id="pdf-modal" class="modal-overlay">
+    <!-- Modal for Preview -->
+    <div id="pdfModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title"></h2>
-                <div class="modal-actions">
-                    <a id="modal-download-link" href="#" download class="modal-button download">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                    <button class="modal-button close-button" aria-label="Close modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+                <h3 id="modalTitle">Document Viewer</h3>
+                <span class="close-modal">&times;</span>
             </div>
-            <div class="loader-container" id="pdf-loader">
-                <div class="loader"></div>
+            <div class="modal-body">
+                <iframe id="pdfViewer" src="" frameborder="0"></iframe>
             </div>
-            <!-- FIX: Removed obsolete frameborder="0". This is handled by CSS. -->
-            <iframe id="pdf-frame" src=""></iframe>
-        </div>
-    </div>
-    
-    <!-- The Command Palette Modal -->
-    <div id="command-palette" class="modal-overlay">
-        <div class="command-palette-content">
-            <div class="command-palette-search">
-                <i class="fas fa-search"></i>
-                <input type="text" id="command-search-input" placeholder="Search the entire library..." autocomplete="off">
-            </div>
-            <ul id="command-results" class="command-palette-results" role="listbox">
-                <!-- Search results will be injected here -->
-            </ul>
-            <div id="command-no-results" class="command-palette-empty">
-                <p>No results found. Try a different query.</p>
-            </div>
-             <div class="command-palette-footer">
-                <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
-                <span><kbd>Enter</kbd> to open</span>
-                <span><kbd>Esc</kbd> to close</span>
+            <div class="modal-footer">
+                <a href="#" id="modalDownloadBtn" target="_blank" class="btn btn-primary">
+                    <i class="fa-solid fa-external-link-alt"></i> Open in Drive
+                </a>
             </div>
         </div>
     </div>
-    
-    <footer>
-        <p>
-            © 2025 <span class="footer-name">SkyPlay-Code</span> | 
-            <!-- FIX: Added aria-label for better accessibility. -->
-            <a href="https://github.com/SkyPlay-Code/pdf-library" target="_blank" rel="noopener noreferrer" aria-label="View source code on GitHub">
-                <i class="fab fa-github"></i> View on GitHub
-            </a>
-        </p>
-    </footer>
 
-    <script src="script.js" defer></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
